@@ -1,0 +1,72 @@
+server:
+  port: ${PORT:8095}
+    
+spring:
+  cloud:
+   gateway:
+       #enabled: true
+       #discovery:
+       # locator:
+       #   enabled: true
+    routes:
+      - id: paymentProcessService
+        uri: lb://PAYMENT-PROCESS-SERVICE
+        predicates:
+        - Path=/api/payment/**  
+        filters:
+        - name: Hystrix
+          args:
+            name: fallbackCommand
+            fallbackUri: forward:/fallback/message
+      - id: userAccessService
+        uri: lb://USER-ACCESS-SERVICE
+        predicates:
+        - Path=/api/user/**  
+        filters:
+        - name: Hystrix
+          args:
+            name: fallbackCommand
+            fallbackUri: forward:/fallback/message
+
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 60000
+
+
+
+management:
+    endpoint:
+        metrics:
+            enabled: true
+        prometheus:
+            enabled: true
+    endpoints:
+        web:
+            expose: '*'
+            exposure:
+                include: '*'
+    metrics:
+        export:
+            prometheus:
+                enabled: true
+
+            
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+eureka:
+  client:
+    serviceUrl:
+       defaultZone: http://localhost:8085/eureka
+    registerWithEureka: true
+    fetchRegistry: true
+  server:
+    waitTimeInMsWhenSyncEmpty: 0      
+      
+      
