@@ -49,7 +49,7 @@ public class PaymentServiceController {
 		return paymentService.getBalanceforAccount(accountNumber);
 	}
 	
-	@GetMapping(path = "/getTxnHistory", produces= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@GetMapping(path = "/getTxnHistory", produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(value = HttpStatus.OK)
 	@ApiOperation(value = "GetTxnHistory", notes = "Retrieve transaction history")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
